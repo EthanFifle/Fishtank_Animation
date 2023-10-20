@@ -216,7 +216,8 @@ function gPut(m) {
 
 var elapsedTime = 0.0;
 var lastResetTime = 0.0;
-var resetInterval = 16.0; // 16 seconds ( reset 4 s after bubble disappear)
+var resetInterval = 12.0; // 12 seconds
+
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -269,7 +270,7 @@ function render() {
 
     /************************* Useful Functions *************************/
 
-    // Sets the rotation angle a & b such that the object rotates a <= obj <=
+    // Sets the rotation angle a & b such that the object rotates a < obj < b
     // Also set the speed (in terms of frequency) between oscillations
     function setRotation( time, a, b, frq ) {
 
@@ -306,6 +307,10 @@ function render() {
     }
 
     // Recursive function for drawing & manipulating ellipses
+    // level: number of ellipses drawn after the "base"
+    // sine: to start in +ve or -ve direction
+    // drift: to set a "realistic" current drift
+    // theta: to set a larger range of angles
     function ellipseHierarchy(level, sine, drift, theta) {
 
         if (level > 0) {
@@ -326,22 +331,58 @@ function render() {
         }
     }
 
-    function drawBubbles(level, velocity, time) {
+    // level: number of bubbles after the base
+    // velocity: speed of the bubbles with respect to the elapsed time in the vertical direction
+    // y_base: to keep track of the basis (base) bubble position in the y, so we can translate to draw all bubbles in the same y position
+    // time: the elapsed time between intervals of 16 seconds
+    function drawBubbleHierarchy(level, oscillation, velocity, x_base, y_base, time) {
 
         if (level > 0) {
+
+            gTranslate(x_base, y_base , 0); // translate back to the base position in y
+
 
             gPush();
             {
 
-                setMV();
-                gTranslate(level % 2 === 0 ? -0.1 : 0.1, (level * 0.3) * velocity * time - 1.5 , 0);
+                setMV(); // Set the model-view and normal matrix for the bubbles
+
+                gTranslate(oscillation + (level % 2 === 0 ? -0.2 : 0.2), velocity - y_base, 0); // Translates in the x & y
+
                 setColor(vec4(1.0, 1.0, 1.0, 1.0));
                 drawSphere();
 
-                drawBubbles(level - 1, velocity*0.3,  time); // Recursive call
+                drawBubbleHierarchy(level - 1, oscillation,velocity*0.5, x_base, y_base, time); // Recursive call + velocity update
             }
             gPop();
         }
+    }
+
+    function drawBubbles( time ){
+
+        gPush();
+        {
+            gScale(0.3, 0.3, 0.3)
+            const velocity = 8 * time; // set velocity for the base bubble
+            const oscillation = setTranslation(TIME, 7, 0.1); // oscillate the bubbles in the x & y direction
+
+            gPush(); // Group 1
+            {
+                setMV();
+                gTranslate(oscillation - 0.1, velocity - 1.5, 3); // -1.5 to set the translation in the y
+                setColor(vec4(1.0, 1.0, 1.0, 1.0));
+                drawSphere();
+
+                drawBubbleHierarchy(3, oscillation, velocity*0.3, -0.1,-1.5, time) // Call recursive function
+                // level: number of bubbles after the base
+                // velocity: speed of the bubbles with respect to the elapsed time in the vertical direction
+                // y_base: to keep track of the basis (base) bubble position in the y, so we can translate to draw all bubbles in the same y position
+                // time: the elapsed time between intervals of 16 seconds
+            }
+            gPop();
+        }
+        gPop();
+
     }
 
     /************************* End of Useful Functions *************************/
@@ -476,50 +517,17 @@ function render() {
             setColor(vec4(0.4,0.0,0.4,1.0));
             drawSphere();
 
-            gPush(); // Bubbles
-            {
+            drawBubbles(elapsedTime);
 
-                //gScale(1/0.35, 1/0.35, 1/0.35);
-                gScale(0.3, 0.3, 0.3)
-                const velocity = 10;
-
-                if (elapsedTime <= 12.0) { // Bubbles disappear after 12 seconds
-
-
-                    gPush();
-                    {
-                        setMV();
-                        gTranslate(-0.1, velocity * elapsedTime - 1.5 , 3);
-                        setColor(vec4(1.0, 1.0, 1.0, 1.0));
-                        drawSphere();
-
-                        drawBubbles(3, velocity, elapsedTime)
-                    }
-                    gPop();
-
-                    /*
-                    for (let i = 1; i < 5; i++) {
-
-                        gPush();
-                        {
-                            setMV();
-                            gTranslate(i % 2 === 0 ? -0.1 : 0.1, (i * 0.3) * velocity * elapsedTime - 1.5 , 3);
-                            setColor(vec4(1.0, 1.0, 1.0, 1.0));
-                            drawSphere();
-                        }
-                        gPop();
-
-                    }
-
-                     */
-
-                }
-
+            if (elapsedTime >= 6.0){
+                let time = elapsedTime - 6.0
+                drawBubbles(time);
             }
-            gPop();
+
+
 
         }
-        gPop() ;
+        gPop() ; // End of Head
 
         // Left Leg
         gPush() ;
