@@ -214,6 +214,9 @@ function gPut(m) {
 	MS.push(m) ;
 }
 
+// Used for bubble animation
+let animationActive = false; // Create a boolean separate from animFlag to manipulate
+
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -243,7 +246,7 @@ function render() {
     var curTime ;
     if( animFlag )
     {
-        curTime = (new Date()).getTime() /1000 ;
+        curTime = (new Date()).getTime() / 1000 ;
 
         if( resetTimerFlag ) {
             prevTime = curTime ;
@@ -252,8 +255,8 @@ function render() {
 
         TIME = TIME + curTime - prevTime ;
         prevTime = curTime ;
-    }
 
+    }
 
     /************************* Useful Functions *************************/
 
@@ -415,6 +418,28 @@ function render() {
 
     /************************* End of Ellipse Code *************************/
 
+    gPush(); // Bubbles
+    {
+
+        if (Math.sin(TIME) > 0) {
+
+            let currTime = (new Date()).getTime() / 1000 ;
+            let time = TIME - currTime;
+
+            for (let i = 0; i < 4; i++) {
+
+                setMV();
+                gTranslate(i % 2 === 0 ? -1 : 1, -time, 0);
+                setColor(vec4(1.0, 1.0, 1.0, 1.0));
+                drawSphere();
+
+            }
+
+        }
+
+    }
+    gPop();
+
     /************************* Human Body Code *************************/
 
     // Human Body basis position
@@ -426,7 +451,7 @@ function render() {
         gRotate(-20,0,1,0);
 
         gTranslate( setTranslation(TIME, 0.5, 0.7), // distance in the x
-                    setTranslation(TIME, 0.5, 0.5), 0); // distance in the y
+            setTranslation(TIME, 0.5, 0.5), 0); // distance in the y
 
         gScale(0.7, 1, 0.4);
 
@@ -728,25 +753,6 @@ function render() {
     gPop() ; // End of Body
 
     /************************* End of Fish Body Code *************************/
-
-    gRotate(90, 1, 0, 0);
-
-    gPush(); // Bubbles
-    {
-        if (TIME >= 1.0) {
-
-            gTranslate(0, TIME , 0.3); // distance in the y
-            gScale(0.1, 0.1, 0.1);
-
-            setColor(vec4(1.0, 1.0, 1.0, 1.0));
-            drawSphere();
-
-
-        }
-
-    }
-
-
 
     
     if( animFlag )
