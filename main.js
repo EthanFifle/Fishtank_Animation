@@ -258,6 +258,9 @@ function render() {
         TIME = TIME + curTime - prevTime ;
         prevTime = curTime ;
 
+        // The below section of code is used to updated and reset the elapsedTime variable which acts as a counter
+        // for drawing bubbles. An interval is declared as a target time to reach (ex. 12 seconds) When the real TIME
+        // passes the interval time (after the last time the interval was reset) the elapsed time is set back to 0
         elapsedTime = TIME % resetInterval;
 
         if (TIME - lastResetTime >= resetInterval) {
@@ -341,13 +344,13 @@ function render() {
 
             gTranslate(x_base, y_base , 0); // translate back to the base position in y
 
-
             gPush();
             {
 
                 setMV(); // Set the model-view and normal matrix for the bubbles
 
                 gTranslate(oscillation + (level % 2 === 0 ? -0.2 : 0.2), velocity - y_base, 0); // Translates in the x & y
+                // (level % 2 === 0 ? -0.2 : 0.2) positions the initial sphere to the right or left
 
                 setColor(vec4(1.0, 1.0, 1.0, 1.0));
                 drawSphere();
@@ -358,11 +361,12 @@ function render() {
         }
     }
 
+    // Used to draw "groups" of 4 bubbles
     function drawBubbles( time ){
 
         gPush();
         {
-            gScale(0.3, 0.3, 0.3)
+            gScale(Math.abs(Math.sin(TIME*2)*0.1) + 0.3, 0.3, 0.3) // oscillate sx with sin function
             const velocity = 8 * time; // set velocity for the base bubble
             const oscillation = setTranslation(TIME, 7, 0.1); // oscillate the bubbles in the x & y direction
 
@@ -370,6 +374,7 @@ function render() {
             {
                 setMV();
                 gTranslate(oscillation - 0.1, velocity - 1.5, 3); // -1.5 to set the translation in the y
+
                 setColor(vec4(1.0, 1.0, 1.0, 1.0));
                 drawSphere();
 
@@ -517,14 +522,12 @@ function render() {
             setColor(vec4(0.4,0.0,0.4,1.0));
             drawSphere();
 
-            drawBubbles(elapsedTime);
+            drawBubbles(elapsedTime); // Draw the fist group for the bubbles
 
-            if (elapsedTime >= 6.0){
+            if (elapsedTime >= 6.0){ // Draw a second group for the bubbles
                 let time = elapsedTime - 6.0
                 drawBubbles(time);
             }
-
-
 
         }
         gPop() ; // End of Head
@@ -537,7 +540,7 @@ function render() {
             gRotate(30,1,0,0);
 
             gTranslate(-0.3,0.4, 0);
-            gRotate(-setRotation(TIME, -20,40,0.7),1,0,0);
+            gRotate(-setRotation(TIME, -10,20,0.7),1,0,0);
             gTranslate(0.3,-0.4, -0);
 
             gScale(0.15, 0.6, 0.15);
@@ -550,7 +553,7 @@ function render() {
                 // Undo scaling
                 gScale(1/0.15, 1/0.6, 1/0.15);
 
-                // Translate, Rotate, Re-scal
+                // Translate, Rotate, Re-scale
                 gTranslate(0,-0.95,-0.40);
                 gRotate(50,1,0,0);
 
@@ -568,7 +571,7 @@ function render() {
                     // Undo scaling
                     gScale(1/0.15, 1/0.5, 1/0.15);
 
-                    // Translate, Rotate, Re-scal
+                    // Translate, Rotate, Re-scale
                     gTranslate(0,-0.6,0.2);
                     gRotate(90,1,0,0);
                     gScale(0.15, 0.45, 0.08);
@@ -588,12 +591,12 @@ function render() {
         // Right Leg
         gPush() ;
         {
-            gScale(1/0.7, 1, 1/0.4);// undo body scale
+            gScale(1/0.7, 1, 1/0.4); // undo body scale
             gTranslate(0.3,-1.4,-0.4);
             gRotate(60,1,0,0);
 
             gTranslate(-0.3,0.4, 0);
-            gRotate(setRotation(TIME, -60,0,0.7),1,0,0);
+            gRotate(setRotation(TIME, -40,-20,0.7),1,0,0);
             gTranslate(0.3,-0.4, -0);
 
             gScale(0.15, 0.6, 0.15);
@@ -606,7 +609,7 @@ function render() {
                 // Undo scaling
                 gScale(1/0.15, 1/0.6, 1/0.15);
 
-                // Translate, Rotate, Re-scal
+                // Translate, Rotate, Re-scale
                 gTranslate(0,-0.95,-0.40);
                 gRotate(50,1,0,0);
 
@@ -624,7 +627,7 @@ function render() {
                     // Undo scaling
                     gScale(1/0.15, 1/0.5, 1/0.15);
 
-                    // Translate, Rotate, Re-scal
+                    // Translate, Rotate, Re-scale
                     gTranslate(0,-0.6,0.2);
                     gRotate(90,1,0,0);
                     gScale(0.15, 0.45, 0.08);
@@ -642,7 +645,7 @@ function render() {
         gPop() ; // End of Right Leg
 
     }
-    gPop() ;
+    gPop() ; // End od Body
 
     /************************* End of Human Body Code *************************/
 
@@ -801,15 +804,11 @@ function render() {
         }
         gPop() ;
 
-
-
-
     }
     gPop() ; // End of Body
 
     /************************* End of Fish Body Code *************************/
 
-    
     if( animFlag )
         window.requestAnimFrame(render);
 }
