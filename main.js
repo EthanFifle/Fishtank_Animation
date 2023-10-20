@@ -214,9 +214,9 @@ function gPut(m) {
 	MS.push(m) ;
 }
 
-// Used for bubble animation
-let animationActive = false; // Create a boolean separate from animFlag to manipulate
-
+var elapsedTime = 0.0;
+var lastResetTime = 0.0;
+var resetInterval = 16.0; // 16 seconds ( reset 4 s after bubble disappear)
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -242,7 +242,8 @@ function render() {
     
     // set all the matrices
     setAllMatrices() ;
-    
+
+    // All things time
     var curTime ;
     if( animFlag )
     {
@@ -256,7 +257,15 @@ function render() {
         TIME = TIME + curTime - prevTime ;
         prevTime = curTime ;
 
+        elapsedTime = TIME % resetInterval;
+
+        if (TIME - lastResetTime >= resetInterval) {
+            elapsedTime = 0.0;
+            lastResetTime = TIME;
+        }
+
     }
+
 
     /************************* Useful Functions *************************/
 
@@ -312,6 +321,24 @@ function render() {
 
                 drawEllipse(TIME, a, b, 0.5, sine); // Pass along angles & sine to draw, set frequency of rotations
                 ellipseHierarchy(level - 1, sine,  b, theta); // Recursive call
+            }
+            gPop();
+        }
+    }
+
+    function drawBubbles(level, velocity, time) {
+
+        if (level > 0) {
+
+            gPush();
+            {
+
+                setMV();
+                gTranslate(level % 2 === 0 ? -0.1 : 0.1, (level * 0.3) * velocity * time - 1.5 , 0);
+                setColor(vec4(1.0, 1.0, 1.0, 1.0));
+                drawSphere();
+
+                drawBubbles(level - 1, velocity*0.3,  time); // Recursive call
             }
             gPop();
         }
@@ -418,28 +445,6 @@ function render() {
 
     /************************* End of Ellipse Code *************************/
 
-    gPush(); // Bubbles
-    {
-
-        if (Math.sin(TIME) > 0) {
-
-            let currTime = (new Date()).getTime() / 1000 ;
-            let time = TIME - currTime;
-
-            for (let i = 0; i < 4; i++) {
-
-                setMV();
-                gTranslate(i % 2 === 0 ? -1 : 1, -time, 0);
-                setColor(vec4(1.0, 1.0, 1.0, 1.0));
-                drawSphere();
-
-            }
-
-        }
-
-    }
-    gPop();
-
     /************************* Human Body Code *************************/
 
     // Human Body basis position
@@ -470,6 +475,48 @@ function render() {
 
             setColor(vec4(0.4,0.0,0.4,1.0));
             drawSphere();
+
+            gPush(); // Bubbles
+            {
+
+                //gScale(1/0.35, 1/0.35, 1/0.35);
+                gScale(0.3, 0.3, 0.3)
+                const velocity = 10;
+
+                if (elapsedTime <= 12.0) { // Bubbles disappear after 12 seconds
+
+
+                    gPush();
+                    {
+                        setMV();
+                        gTranslate(-0.1, velocity * elapsedTime - 1.5 , 3);
+                        setColor(vec4(1.0, 1.0, 1.0, 1.0));
+                        drawSphere();
+
+                        drawBubbles(3, velocity, elapsedTime)
+                    }
+                    gPop();
+
+                    /*
+                    for (let i = 1; i < 5; i++) {
+
+                        gPush();
+                        {
+                            setMV();
+                            gTranslate(i % 2 === 0 ? -0.1 : 0.1, (i * 0.3) * velocity * elapsedTime - 1.5 , 3);
+                            setColor(vec4(1.0, 1.0, 1.0, 1.0));
+                            drawSphere();
+                        }
+                        gPop();
+
+                    }
+
+                     */
+
+                }
+
+            }
+            gPop();
 
         }
         gPop() ;
