@@ -283,7 +283,7 @@ function render() {
         return a + (oscillation + 1) * 0.5 * angleRange;
     }
 
-    // Set the translation speed and distance for the human and fish
+    // Set the translation speed and distance
     function setTranslation( time, speed, distance ) {
 
         return Math.cos(time * speed ) * distance;
@@ -335,7 +335,9 @@ function render() {
     }
 
     // level: number of bubbles after the base
+    // oscillation: used to oscillate the bubbles from side to die in the x direction
     // velocity: speed of the bubbles with respect to the elapsed time in the vertical direction
+    // x_base: to keep track of the basis (base) bubble position in the x, so we can translate to draw all bubbles in the same x position
     // y_base: to keep track of the basis (base) bubble position in the y, so we can translate to draw all bubbles in the same y position
     // time: the elapsed time between intervals of 16 seconds
     function drawBubbleHierarchy(level, oscillation, velocity, x_base, y_base, time) {
@@ -535,15 +537,17 @@ function render() {
         // Left Leg
         gPush() ;
         {
+            // Scale, Translate, Rotate
             gScale(1/0.7, 1, 1/0.4);
             gTranslate(-0.3,-1.55,-0.2);
             gRotate(30,1,0,0);
 
+            // Translate to a "joint" position on the hip of the leg
             gTranslate(-0.3,0.4, 0);
-            gRotate(-setRotation(TIME, -10,20,0.7),1,0,0);
+            gRotate(-setRotation(TIME, -10,20,0.7),1,0,0); // Rotate at this point
             gTranslate(0.3,-0.4, -0);
 
-            gScale(0.15, 0.6, 0.15);
+            gScale(0.15, 0.6, 0.15); // Scale proportionally
 
             setColor(vec4(0.4,0.0,0.4,1.0));
             drawCube();
@@ -767,7 +771,7 @@ function render() {
             }
             gPop() ;
 
-            // Tail Merger (extra Not Needed but here for aesthetic)
+            // Center fin tail Merger (extra Not Needed but here for aesthetic)
             gPush() ; // Remember x = y, y = z, z = x
             {
                 gScale(1/0.4, 1/0.2, 1/1.75);
