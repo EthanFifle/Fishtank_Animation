@@ -10,6 +10,49 @@ To compile and run all you need to do is:
     3. launch the html page in a local browser/local host
     4. Toggle the animation
 
+Implemented successfully: We have managed to implement all required aspects successfully
+    (a) You have to use real time to synchronize your animations. (2 Marks).
+    (b) Ground box, 2 (Marks).
+    (c) Two rocks (spheres), (4 Marks).
+    (d) Seaweed modeling: each strand has 10 ellipses. (4 Marks)
+    (e) Seaweed animation (4 Marks).
+    (f) Seaweed positioning (3 strands) (3 Marks).
+    (g) Fish modeling: 2 eyes with pupils, 1 head, 1 body, 2 tail fins, (6 Marks).
+    (h) Fish animation: The fish must swim in a circle around the seaweed. It should
+        always be aligned with the tangent of the circle. (4 Marks).
+    (i) A burst of 4-5 bubbles should appear every few seconds. (4 Marks).
+    (j) Each bubble should appear near the mouth of the character (2 Marks).
+    (k) The shape of each bubble should oscillate with time. (2 Marks).
+    (l) Each bubble should move straight up with time. (2 Marks).
+    (m) Each bubble should be removed/deleted after approximately 12 seconds. (1 Mark).
+    (n) Model a human character with no arms. (4 Marks).
+    (o) The character should move in the x and y world directions. (2 Marks).
+    (p) The legs of the character should kick (hips, knees) as shown in the video. (4
+        Marks). The feet do not move.
+    (q) You do not have to match the exact motion or dimensions of the objects shown in
+        the sample executable. However, your scene and the sample one should be
+        qualitatively and visually similar (4 Marks).
+    (r) Programming style (comments, functions) (2 Marks).
+
+Each element will be described in sections that correspond to comments (section headers) in the code.
+
+Here is an overview:
+*** Note some elements are repeated in section, this is because functions were used in certain section to help
+    animate, transform, position etc. certain objects, vectors, matrix etc. ***
+
+    (a) - is commented thought the code
+    (m) - is found on lines 261-269 where resetInterval = 12.0 for 12 seconds
+    (q) - should be visually similar upon startup of the html
+    (r) - all code and reasons are commented sufficiently and well organized
+
+    Useful Functions -> Describe -> (d), (e), (i), (j), (k), (l), (o)
+    Scene Set Up     -> Describe -> (b), (c)
+    Ellipse Code     -> Describe -> (d), (e), (f)
+    Human Body Code  -> Describe -> (i), (j), (l), (n), (o), (p)
+    Fish Body Code   -> Describe -> (g), (h)
+
+    Each section in the overview is described below as well as in the comments in created detail
+
 /*** Comments on the "Useful Functions" Section ***/
 
 This section of the code is where we store our useful functions that are utilized through the code
