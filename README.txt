@@ -2,13 +2,15 @@ This project was a group effort.
 
 Team members include:
 Ethan Fifle, Student number: 217016791
-Geral Ikem, Student number:
+Gerald Ikem, Student number: 218057166
 
 To compile and run all you need to do is:
     1. extract the zip file
     2. open the project in any IDE
     3. launch the html page in a local browser/local host
     4. Toggle the animation
+
+    *** NOTE the .idea file is created for running the program on intellij however it is not needed for the project ***
 
 Implemented successfully: We have managed to implement all required aspects successfully
     (a) You have to use real time to synchronize your animations. (2 Marks).
@@ -33,6 +35,7 @@ Implemented successfully: We have managed to implement all required aspects succ
         the sample executable. However, your scene and the sample one should be
         qualitatively and visually similar (4 Marks).
     (r) Programming style (comments, functions) (2 Marks).
+    (s) The scene should be 512x512. [-2 Marks if it is not.]
 
 Each element will be described in sections that correspond to comments (section headers) in the code.
 
@@ -44,6 +47,7 @@ Here is an overview:
     (m) - is found on lines 261-269 where resetInterval = 12.0 for 12 seconds
     (q) - should be visually similar upon startup of the html
     (r) - all code and reasons are commented sufficiently and well organized
+    (s) - as seen in the canvas html element
 
     Useful Functions -> Describe -> (d), (e), (i), (j), (k), (l), (o)
     Scene Set Up     -> Describe -> (b), (c)
@@ -142,3 +146,6 @@ Here is where our fish body code lies. We have made a couple improvements upon t
             - The center fin acts as a filler for the holes created by the top & bottom cones - purely for aesthetic
             - The body union component blends the tail more seamlessly into the fishes body for more realistic movement.
               This is best observed at camera position (90,0,0)
+
+    The rotations and translations of the fish are described through the code as well as the logic for preforming
+    transformations a certain way.
