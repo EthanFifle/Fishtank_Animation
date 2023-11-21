@@ -1,4 +1,4 @@
-This project was a group effort.
+This project was a group effort. It is a simple 3D animated scene in WebGL for my 3D graphics course. 
 
 Team members include:
 Ethan Fifle, Student number: 217016791
